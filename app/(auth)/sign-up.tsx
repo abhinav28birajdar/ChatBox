@@ -1,53 +1,303 @@
+/**
+ * Sign Up Screen
+ * Modern registration interface with form validation and Supabase integration
+ */
+
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  TextInput, 
-  Alert,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ThemedView } from '@/components/themed-view';
-import { ThemedText } from '@/components/themed-text';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { MotiView } from 'moti';
+
+import { SafeContainer } from '@/components/common/safe-container';
+import { KeyboardAwareContainer } from '@/components/common/keyboard-aware-container';
+import { Button, Input, Card } from '@/components/ui';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useTheme } from '@/hooks/use-theme';
+import { useAuthStore } from '@/store';
+import { signUpSchema, SignUpData } from '@/utils/validation';
+import { spacing, typography } from '@/constants/theme';
 
 export default function SignUpScreen() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [isLoading, setIsLoading] = useState(false);
+  const theme = useTheme();
+  const router = useRouter();
+  const { signUp, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const router = useRouter();
 
-  const updateFormData = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignUpData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+      username: '',
+      fullName: '',
+    },
+  });
+
+  const onSubmit = async (data: SignUpData) => {
+    const result = await signUp(data.email, data.password, data.username, data.fullName);
+    
+    if (result.success) {
+      Alert.alert(
+        'Account Created!',
+        'Your account has been created successfully. Please check your email to verify your account.',
+        [{ text: 'OK', onPress: () => router.replace('/(auth)/verify-email') }]
+      );
+    } else {
+      Alert.alert('Sign Up Failed', result.error || 'Please try again');
+    }
   };
 
-  const validateForm = () => {
-    const { firstName, lastName, email, password, confirmPassword } = formData;
-    
-    if (!firstName.trim()) {
-      Alert.alert('Error', 'First name is required');
-      return false;
-    }
-    
-    if (!lastName.trim()) {
-      Alert.alert('Error', 'Last name is required');
-      return false;
-    }
-    
-    if (!email.trim()) {
-      Alert.alert('Error', 'Email is required');
+  const handleSignIn = () => {
+    router.push('/(auth)/sign-in');
+  };
+
+  return (
+    <SafeContainer>
+      <KeyboardAwareContainer>
+        <ScrollView 
+          style={styles.container}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
+          <MotiView
+            style={styles.headerContainer}
+            animate={{ opacity: 1, translateY: 0 }}
+            from={{ opacity: 0, translateY: -20 }}
+            transition={{ type: 'timing', duration: 600 }}
+          >
+            <View style={[styles.logoContainer, { backgroundColor: theme.colors.primary }]}>
+              <IconSymbol name="person.badge.plus" size={40} color={theme.colors.textInverse} />
+            </View>
+            
+            <Text style={[styles.title, { color: theme.colors.text }]}>
+              Create Account
+            </Text>
+            <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
+              Join ChatBox and start connecting
+            </Text>
+          </MotiView>
+
+          {/* Sign Up Form */}
+          <MotiView
+            animate={{ opacity: 1, translateY: 0 }}
+            from={{ opacity: 0, translateY: 30 }}
+            transition={{ type: 'timing', duration: 600, delay: 200 }}
+          >
+            <Card padding="lg" style={styles.formCard}>
+              <Controller
+                control={control}
+                name="fullName"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    label="Full Name"
+                    placeholder="Enter your full name"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={errors.fullName?.message}
+                    leftIcon="person"
+                    autoCapitalize="words"
+                    textContentType="name"
+                    isRequired
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="username"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    label="Username"
+                    placeholder="Enter a unique username"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={errors.username?.message}
+                    leftIcon="at.badge.plus"
+                    autoCapitalize="none"
+                    autoComplete="username"
+                    textContentType="username"
+                    isRequired
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    label="Email Address"
+                    placeholder="Enter your email"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={errors.email?.message}
+                    leftIcon="envelope"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoComplete="email"
+                    textContentType="emailAddress"
+                    isRequired
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    label="Password"
+                    placeholder="Create a password"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={errors.password?.message}
+                    leftIcon="lock"
+                    secureTextEntry={!showPassword}
+                    onRightIconPress={() => setShowPassword(!showPassword)}
+                    autoComplete="new-password"
+                    textContentType="newPassword"
+                    isRequired
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    label="Confirm Password"
+                    placeholder="Re-enter your password"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={errors.confirmPassword?.message}
+                    leftIcon="lock"
+                    secureTextEntry={!showConfirmPassword}
+                    onRightIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                    autoComplete="new-password"
+                    textContentType="newPassword"
+                    isRequired
+                  />
+                )}
+              />
+
+              <Button
+                title={isSubmitting || isLoading ? 'Creating Account...' : 'Create Account'}
+                onPress={handleSubmit(onSubmit)}
+                isLoading={isSubmitting || isLoading}
+                isFullWidth
+                style={styles.signUpButton}
+              />
+            </Card>
+          </MotiView>
+
+          {/* Sign In Link */}
+          <MotiView
+            style={styles.signInContainer}
+            animate={{ opacity: 1 }}
+            from={{ opacity: 0 }}
+            transition={{ type: 'timing', duration: 600, delay: 400 }}
+          >
+            <Text style={[styles.signInText, { color: theme.colors.textSecondary }]}>
+              Already have an account?{' '}
+            </Text>
+            <Button
+              title="Sign In"
+              variant="ghost"
+              size="sm"
+              onPress={handleSignIn}
+              textStyle={{ color: theme.colors.primary }}
+            />
+          </MotiView>
+
+          {/* Footer */}
+          <MotiView
+            style={styles.footer}
+            animate={{ opacity: 1 }}
+            from={{ opacity: 0 }}
+            transition={{ type: 'timing', duration: 600, delay: 600 }}
+          >
+            <Text style={[styles.footerText, { color: theme.colors.textMuted }]}>
+              By creating an account, you agree to our Terms of Service and Privacy Policy
+            </Text>
+          </MotiView>
+        </ScrollView>
+      </KeyboardAwareContainer>
+    </SafeContainer>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
+  },
+  headerContainer: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  logoContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.lg,
+  },
+  title: {
+    fontSize: typography.fontSizes['4xl'],
+    fontWeight: typography.fontWeights.bold,
+    marginBottom: spacing.sm,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: typography.fontSizes.lg,
+    textAlign: 'center',
+    lineHeight: typography.lineHeights.relaxed * typography.fontSizes.lg,
+  },
+  formCard: {
+    marginBottom: spacing.lg,
+  },
+  signUpButton: {
+    marginTop: spacing.md,
+  },
+  signInContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  signInText: {
+    fontSize: typography.fontSizes.md,
+  },
+  footer: {
+    marginTop: 'auto',
+    alignItems: 'center',
+  },
+  footerText: {
+    fontSize: typography.fontSizes.xs,
+    textAlign: 'center',
+    lineHeight: typography.lineHeights.relaxed * typography.fontSizes.xs,
+  },
+});
       return false;
     }
     
