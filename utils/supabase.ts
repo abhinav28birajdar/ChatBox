@@ -57,6 +57,11 @@ export class SupabaseService {
     this.client = client;
   }
 
+  // Public getter for client access
+  get supabaseClient() {
+    return this.client;
+  }
+
   // Auth helpers
   async signUp(email: string, password: string, metadata?: Record<string, any>) {
     const { data, error } = await this.client.auth.signUp({
@@ -107,19 +112,19 @@ export class SupabaseService {
   async updateProfile(userId: string, updates: Partial<Database['public']['Tables']['profiles']['Update']>) {
     const { data, error } = await this.client
       .from('profiles')
-      .update(updates)
+      .update(updates as any)
       .eq('user_id', userId)
       .select()
-      .single();
+      .single() as any;
     return { data, error };
   }
 
   async createProfile(profileData: Database['public']['Tables']['profiles']['Insert']) {
     const { data, error } = await this.client
       .from('profiles')
-      .insert(profileData)
+      .insert(profileData as any)
       .select()
-      .single();
+      .single() as any;
     return { data, error };
   }
 
@@ -173,14 +178,14 @@ export class SupabaseService {
   async sendMessage(messageData: Database['public']['Tables']['messages']['Insert']) {
     const { data, error } = await this.client
       .from('messages')
-      .insert(messageData)
+      .insert(messageData as any)
       .select(`
         *,
         user:user_id (
           profiles (username, full_name, avatar_url)
         )
       `)
-      .single();
+      .single() as any;
 
     return { data, error };
   }
@@ -188,9 +193,9 @@ export class SupabaseService {
   async createChat(chatData: Database['public']['Tables']['chats']['Insert']) {
     const { data, error } = await this.client
       .from('chats')
-      .insert(chatData)
+      .insert(chatData as any)
       .select()
-      .single();
+      .single() as any;
 
     return { data, error };
   }
@@ -198,9 +203,9 @@ export class SupabaseService {
   async addChatMember(memberData: Database['public']['Tables']['chat_members']['Insert']) {
     const { data, error } = await this.client
       .from('chat_members')
-      .insert(memberData)
+      .insert(memberData as any)
       .select()
-      .single();
+      .single() as any;
 
     return { data, error };
   }

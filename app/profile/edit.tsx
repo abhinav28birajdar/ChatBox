@@ -1,19 +1,19 @@
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  TextInput,
-  ScrollView,
+import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
-  Alert
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { ThemedView } from '@/components/themed-view';
-import { ThemedText } from '@/components/themed-text';
 
 interface ProfileFormData {
   firstName: string;
@@ -146,9 +146,9 @@ export default function EditProfileScreen() {
                     style={styles.input}
                     value={formData.firstName}
                     onChangeText={(text) => updateFormData('firstName', text)}
-                    placeholder=\"First name\"
-                    placeholderTextColor=\"#8E8E93\"
-                    autoCapitalize=\"words\"
+                    placeholder="First name"
+                    placeholderTextColor="#8E8E93"
+                    autoCapitalize="words"
                   />
                 </View>
 
@@ -158,9 +158,9 @@ export default function EditProfileScreen() {
                     style={styles.input}
                     value={formData.lastName}
                     onChangeText={(text) => updateFormData('lastName', text)}
-                    placeholder=\"Last name\"
-                    placeholderTextColor=\"#8E8E93\"
-                    autoCapitalize=\"words\"
+                    placeholder="Last name"
+                    placeholderTextColor="#8E8E93"
+                    autoCapitalize="words"
                   />
                 </View>
               </View>
@@ -172,9 +172,9 @@ export default function EditProfileScreen() {
                   style={styles.input}
                   value={formData.username}
                   onChangeText={(text) => updateFormData('username', text)}
-                  placeholder=\"Username\"
-                  placeholderTextColor=\"#8E8E93\"
-                  autoCapitalize=\"none\"
+                  placeholder="Username"
+                  placeholderTextColor="#8E8E93"
+                  autoCapitalize="none"
                 />
                 <ThemedText style={styles.helpText}>
                   This is how others will find you on ChatBox
@@ -188,11 +188,11 @@ export default function EditProfileScreen() {
                   style={[styles.input, styles.bioInput]}
                   value={formData.bio}
                   onChangeText={(text) => updateFormData('bio', text)}
-                  placeholder=\"Tell people about yourself...\"
-                  placeholderTextColor=\"#8E8E93\"
+                  placeholder="Tell people about yourself..."
+                  placeholderTextColor="#8E8E93"
                   multiline
                   numberOfLines={4}
-                  textAlignVertical=\"top\"
+                  textAlignVertical="top"
                 />
                 <ThemedText style={styles.helpText}>
                   {formData.bio.length}/500
@@ -206,8 +206,8 @@ export default function EditProfileScreen() {
                   style={styles.input}
                   value={formData.location}
                   onChangeText={(text) => updateFormData('location', text)}
-                  placeholder=\"City, Country\"
-                  placeholderTextColor=\"#8E8E93\"
+                  placeholder="City, Country"
+                  placeholderTextColor="#8E8E93"
                 />
               </View>
 
@@ -218,10 +218,10 @@ export default function EditProfileScreen() {
                   style={styles.input}
                   value={formData.website}
                   onChangeText={(text) => updateFormData('website', text)}
-                  placeholder=\"https://yourwebsite.com\"
-                  placeholderTextColor=\"#8E8E93\"
-                  autoCapitalize=\"none\"
-                  keyboardType=\"url\"
+                  placeholder="https://yourwebsite.com"
+                  placeholderTextColor="#8E8E93"
+                  autoCapitalize="none"
+                  keyboardType="url"
                 />
               </View>
 
@@ -232,9 +232,9 @@ export default function EditProfileScreen() {
                   style={styles.input}
                   value={formData.phone}
                   onChangeText={(text) => updateFormData('phone', text)}
-                  placeholder=\"+1 (555) 123-4567\"
-                  placeholderTextColor=\"#8E8E93\"
-                  keyboardType=\"phone-pad\"
+                  placeholder="+1 (555) 123-4567"
+                  placeholderTextColor="#8E8E93"
+                  keyboardType="phone-pad"
                 />
               </View>
 

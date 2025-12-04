@@ -89,9 +89,9 @@ export const useAuthStore = create<AuthStore>()(
             const user: User = {
               id: data.user.id,
               email: data.user.email!,
-              username: profile?.username || undefined,
-              full_name: profile?.full_name || undefined,
-              avatar_url: profile?.avatar_url || undefined,
+              username: (profile as any)?.username || undefined,
+              full_name: (profile as any)?.full_name || undefined,
+              avatar_url: (profile as any)?.avatar_url || undefined,
               phone: data.user.phone || undefined,
               is_online: true,
               last_seen: new Date().toISOString(),
@@ -239,9 +239,9 @@ export const useAuthStore = create<AuthStore>()(
           set({
             user: {
               ...user,
-              username: data?.username || user.username,
-              full_name: data?.full_name || user.full_name,
-              avatar_url: data?.avatar_url || user.avatar_url,
+              username: (data as any)?.username || user.username,
+              full_name: (data as any)?.full_name || user.full_name,
+              avatar_url: (data as any)?.avatar_url || user.avatar_url,
               updated_at: new Date().toISOString(),
             },
           });

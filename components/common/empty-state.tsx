@@ -54,7 +54,7 @@ export function EmptyState({
           transition={{ type: 'timing', duration: 400, delay: 100 }}
         >
           <IconSymbol
-            name={iconName}
+            name={iconName as any}
             size={40}
             color={theme.colors.textMuted}
           />

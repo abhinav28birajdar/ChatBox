@@ -86,19 +86,19 @@ export function Modal({
     switch (position) {
       case 'bottom':
         return {
-          justifyContent: 'flex-end',
+          justifyContent: 'flex-end' as const,
           paddingBottom: insets.bottom + spacing.md,
         };
       case 'top':
         return {
-          justifyContent: 'flex-start',
+          justifyContent: 'flex-start' as const,
           paddingTop: insets.top + spacing.md,
         };
       case 'center':
       default:
         return {
-          justifyContent: 'center',
-          alignItems: 'center',
+          justifyContent: 'center' as const,
+          alignItems: 'center' as const,
         };
     }
   };

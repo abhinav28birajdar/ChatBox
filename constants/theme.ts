@@ -183,12 +183,12 @@ export const darkTheme = {
     border: palette.gray[600],
     borderLight: palette.gray[700],
     
-    success: palette.success[400],
-    successLight: palette.success[900],
-    warning: palette.warning[400],
-    warningLight: palette.warning[900],
-    error: palette.error[400],
-    errorLight: palette.error[900],
+    success: palette.success[500],
+    successLight: palette.success[50],
+    warning: palette.warning[500],
+    warningLight: palette.warning[50],
+    error: palette.error[500],
+    errorLight: palette.error[50],
     
     // Chat specific
     messageOwn: palette.primary[600],

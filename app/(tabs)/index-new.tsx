@@ -3,10 +3,11 @@
  * Main chat list with search and real-time updates
  */
 
+import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
 import React, { useCallback, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { EmptyState } from '@/components/common/empty-state';
 import { SafeContainer } from '@/components/common/safe-container';
@@ -25,7 +26,7 @@ export default function ChatsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
-  const filteredChats = chats.filter(chat => 
+  const filteredChats = chats.filter((chat: any) => 
     chat.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     chat.last_message?.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -223,7 +224,9 @@ export default function ChatsScreen() {
             onAction={searchQuery ? undefined : handleNewChat}
           />
         ) : (
-          <ScrollView
+          <FlashList
+            data={filteredChats}
+            renderItem={renderChatItem}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
@@ -234,9 +237,7 @@ export default function ChatsScreen() {
               />
             }
             contentContainerStyle={styles.listContent}
-          >
-            {filteredChats.map((chat) => renderChatItem({ item: chat }))}
-          </ScrollView>
+          />
         )}
       </View>
     </SafeContainer>

@@ -132,11 +132,18 @@ export function Button({
       paddingHorizontal: sizeStyles.paddingHorizontal,
       borderRadius: sizeStyles.borderRadius,
       opacity: isDisabled ? 0.6 : 1,
-      width: isFullWidth ? '100%' : undefined,
-      ...theme.shadows.sm,
+      width: isFullWidth ? ('100%' as const) : undefined,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.05,
+      shadowRadius: 2,
+      elevation: 1,
     },
     style,
-  ];
+  ] as any;
 
   const contentTextStyle = [
     styles.text,

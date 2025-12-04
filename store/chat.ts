@@ -31,12 +31,17 @@ interface ChatActions {
   loadChats: () => Promise<void>;
   setActiveChat: (chatId: string | null) => void;
   createChat: (type: 'direct' | 'group', participantIds: string[], name?: string) => Promise<string | null>;
+  createDirectChat: (participantId: string) => Promise<string | null>;
+  createGroupChat: (name: string, participantIds: string[]) => Promise<string | null>;
   leaveChat: (chatId: string) => Promise<boolean>;
   
   // Message management
   loadMessages: (chatId: string, offset?: number) => Promise<void>;
   sendMessage: (chatId: string, content: string, type?: 'text' | 'image' | 'file' | 'audio') => Promise<boolean>;
   deleteMessage: (messageId: string) => Promise<boolean>;
+  
+  // User search
+  searchUsers: (query: string) => Promise<any[]>;
   
   // Real-time
   subscribeToChat: (chatId: string) => void;
@@ -78,16 +83,16 @@ export const useChatStore = create<ChatStore>()(
         const { data, error } = await supabase.getUserChats(user.id);
 
         if (!error && data) {
-          const formattedChats: Chat[] = data.map((chatMember: any) => ({
-            id: chatMember.chats.id,
-            name: chatMember.chats.name,
-            type: chatMember.chats.type,
-            description: chatMember.chats.description,
-            avatar_url: chatMember.chats.avatar_url,
-            created_by: chatMember.chats.created_by,
-            created_at: chatMember.chats.created_at,
-            updated_at: chatMember.chats.updated_at,
-            last_message: chatMember.chats.messages?.[0] ? {
+          const formattedChats: Chat[] = (data as any[]).map((chatMember: any) => ({
+            id: chatMember.chats?.id,
+            name: chatMember.chats?.name,
+            type: chatMember.chats?.type,
+            description: chatMember.chats?.description,
+            avatar_url: chatMember.chats?.avatar_url,
+            created_by: chatMember.chats?.created_by,
+            created_at: chatMember.chats?.created_at,
+            updated_at: chatMember.chats?.updated_at,
+            last_message: chatMember.chats?.messages?.[0] ? {
               ...chatMember.chats.messages[0],
               user: chatMember.chats.messages[0].user?.profiles,
             } : undefined,
@@ -149,7 +154,7 @@ export const useChatStore = create<ChatStore>()(
 
         // Add creator as owner
         await supabase.addChatMember({
-          chat_id: chat.id,
+          chat_id: (chat as any).id,
           user_id: user.id,
           role: 'owner',
         });
@@ -157,7 +162,7 @@ export const useChatStore = create<ChatStore>()(
         // Add other participants as members
         for (const participantId of participantIds) {
           await supabase.addChatMember({
-            chat_id: chat.id,
+            chat_id: (chat as any).id,
             user_id: participantId,
             role: 'member',
           });
@@ -166,7 +171,7 @@ export const useChatStore = create<ChatStore>()(
         // Refresh chats
         await get().loadChats();
 
-        return chat.id;
+        return (chat as any).id;
       } catch (error) {
         console.error('Error creating chat:', error);
         return null;
@@ -194,7 +199,7 @@ export const useChatStore = create<ChatStore>()(
         const { data, error } = await supabase.getChatMessages(chatId, 50, offset);
 
         if (!error && data) {
-          const formattedMessages: Message[] = data.reverse().map((msg: any) => ({
+          const formattedMessages: Message[] = (data as any[]).reverse().map((msg: any) => ({
             ...msg,
             user: msg.user?.profiles,
             reply_to_message: msg.reply_to_message,
@@ -235,8 +240,8 @@ export const useChatStore = create<ChatStore>()(
         // Optimistically add message to local state
         if (data) {
           const newMessage: Message = {
-            ...data,
-            user: data.user?.profiles,
+            ...(data as any),
+            user: (data as any).user?.profiles,
           };
 
           set((state) => ({
@@ -351,6 +356,122 @@ export const useChatStore = create<ChatStore>()(
 
     setLoadingMessages: (loading: boolean) => {
       set({ isLoadingMessages: loading });
+    },
+
+    // Additional methods for new chat functionality
+    createDirectChat: async (participantId: string): Promise<string | null> => {
+      const { user } = useAuthStore.getState();
+      if (!user) return null;
+
+      try {
+        const supabase = await getSupabaseService();
+        
+        // Create the chat
+        const chatData = {
+          type: 'direct' as const,
+          created_by: user.id,
+        };
+        
+        const result = await supabase.createChat(chatData);
+        
+        if (result.error || !result.data) {
+          console.error('Error creating chat:', result.error);
+          return null;
+        }
+        
+        const chatId = result.data.id;
+        
+        // Add members to the chat
+        await supabase.addChatMember({
+          chat_id: chatId,
+          user_id: user.id,
+          role: 'owner',
+        });
+        
+        await supabase.addChatMember({
+          chat_id: chatId,
+          user_id: participantId,
+          role: 'member',
+        });
+        
+        // Reload chats to include the new one
+        await get().loadChats();
+        
+        return chatId;
+      } catch (error) {
+        console.error('Error creating direct chat:', error);
+        return null;
+      }
+    },
+
+    createGroupChat: async (name: string, participantIds: string[]): Promise<string | null> => {
+      const { user } = useAuthStore.getState();
+      if (!user) return null;
+
+      try {
+        const supabase = await getSupabaseService();
+        
+        // Create the chat
+        const chatData = {
+          type: 'group' as const,
+          name,
+          created_by: user.id,
+        };
+        
+        const result = await supabase.createChat(chatData);
+        
+        if (result.error || !result.data) {
+          console.error('Error creating chat:', result.error);
+          return null;
+        }
+        
+        const chatId = result.data.id;
+        
+        // Add the creator as owner
+        await supabase.addChatMember({
+          chat_id: chatId,
+          user_id: user.id,
+          role: 'owner',
+        });
+        
+        // Add other participants as members
+        for (const participantId of participantIds) {
+          await supabase.addChatMember({
+            chat_id: chatId,
+            user_id: participantId,
+            role: 'member',
+          });
+        }
+        
+        // Reload chats to include the new one
+        await get().loadChats();
+        
+        return chatId;
+      } catch (error) {
+        console.error('Error creating group chat:', error);
+        return null;
+      }
+    },
+
+    searchUsers: async (query: string): Promise<any[]> => {
+      try {
+        const supabase = await getSupabaseService();
+        const { data, error } = await supabase.supabaseClient
+          .from('profiles')
+          .select('id, username, full_name, avatar_url')
+          .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
+          .limit(20);
+
+        if (error) {
+          console.error('Error searching users:', error);
+          return [];
+        }
+
+        return data || [];
+      } catch (error) {
+        console.error('Error searching users:', error);
+        return [];
+      }
     },
   }))
 );

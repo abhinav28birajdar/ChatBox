@@ -258,7 +258,7 @@ export const Input = forwardRef<InputRef, InputProps>(({
         {leftIcon && (
           <View style={styles.leftIconContainer}>
             <IconSymbol
-              name={leftIcon}
+              name={leftIcon as any}
               size={20}
               color={isFocused ? theme.colors.primary : theme.colors.icon}
             />

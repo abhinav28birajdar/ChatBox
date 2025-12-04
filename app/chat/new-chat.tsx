@@ -88,7 +88,7 @@ export default function NewChatScreen() {
     try {
       const results = await searchUsers(query);
       // Filter out current user
-      setUsers(results.filter(u => u.id !== user?.id));
+      setUsers(results.filter((u: any) => u.id !== user?.id));
     } catch (error) {
       console.error('Failed to search users:', error);
     } finally {
@@ -126,7 +126,7 @@ export default function NewChatScreen() {
 
     setIsCreating(true);
     try {
-      let chatId: string;
+      let chatId: string | null;
 
       if (chatType === 'direct') {
         chatId = await createDirectChat(selectedUsers[0].id);
@@ -136,13 +136,17 @@ export default function NewChatScreen() {
           return;
         }
         chatId = await createGroupChat(
-          selectedUsers.map(u => u.id),
-          groupName.trim()
+          groupName.trim(),
+          selectedUsers.map((u: any) => u.id)
         );
       }
 
       // Navigate to the new chat
-      router.replace(`/chat/conversation?chatId=${chatId}`);
+      if (chatId) {
+        router.replace(`/chat/conversation?chatId=${chatId}`);
+      } else {
+        alert('Failed to create chat. Please try again.');
+      }
     } catch (error) {
       console.error('Failed to create chat:', error);
       alert('Failed to create chat. Please try again.');
@@ -296,7 +300,7 @@ export default function NewChatScreen() {
         <View style={styles.usersContainer}>
           {isLoading ? (
             <View style={styles.loadingContainer}>
-              <LoadingSpinner size="large" color={theme.colors.primary} />
+              <LoadingSpinner size={32} color={theme.colors.primary} />
               <Text style={[styles.loadingText, { color: theme.colors.textMuted }]}>
                 Searching users...
               </Text>
@@ -338,7 +342,7 @@ export default function NewChatScreen() {
               title={isCreating ? 'Creating...' : `Create ${chatType === 'direct' ? 'Chat' : 'Group'}`}
               onPress={handleCreateChat}
               disabled={isCreating}
-              loading={isCreating}
+              isLoading={isCreating}
               style={styles.createButton}
             />
           </MotiView>
