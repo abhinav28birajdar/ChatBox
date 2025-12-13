@@ -110,12 +110,13 @@ export class SupabaseService {
   }
 
   async updateProfile(userId: string, updates: Partial<Database['public']['Tables']['profiles']['Update']>) {
-    const { data, error } = await this.client
+    // @ts-ignore - Supabase typing issue with generic updates
+    const { data, error } = await (this.client
       .from('profiles')
       .update(updates as any)
-      .eq('user_id', userId)
+      .eq('id', userId)
       .select()
-      .single() as any;
+      .single() as any);
     return { data, error };
   }
 

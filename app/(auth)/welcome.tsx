@@ -1,12 +1,32 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { hasSupabaseConfig } from '@/utils/secure-config';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function WelcomeScreen() {
   const router = useRouter();
+  const [isCheckingConfig, setIsCheckingConfig] = useState(true);
+
+  useEffect(() => {
+    checkConfiguration();
+  }, []);
+
+  const checkConfiguration = async () => {
+    try {
+      const hasConfig = await hasSupabaseConfig();
+      if (!hasConfig) {
+        // Redirect to configuration screen if not configured
+        router.replace('/(auth)/supabase-config' as any);
+      }
+    } catch (error) {
+      // Silently handle error and allow user to proceed
+    } finally {
+      setIsCheckingConfig(false);
+    }
+  };
 
   const handleGetStarted = () => {
     router.push('/(auth)/onboarding/slide-1');
@@ -15,6 +35,14 @@ export default function WelcomeScreen() {
   const handleSignIn = () => {
     router.push('/(auth)/sign-in');
   };
+
+  if (isCheckingConfig) {
+    return (
+      <SafeAreaView style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -113,6 +141,10 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 16,
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonContainer: {
     gap: 16,

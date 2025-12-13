@@ -3,15 +3,15 @@ import { ThemedView } from '@/components/themed-view';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -91,16 +91,16 @@ export default function EditProfileScreen() {
     }
   };
 
-  const handleChangeProfilePhoto = () => {
-    router.push('/profile/change-photo');
+  const handleChangePhoto = () => {
+    router.push('/profile/change-photo' as any);
   };
 
-  const handleVerifyAccount = () => {
-    router.push('/profile/id-verification');
+  const handleIdVerification = () => {
+    router.push('/profile/id-verification' as any);
   };
 
   const handleInterestsSkills = () => {
-    router.push('/profile/interests-skills');
+    router.push('/profile/interests-skills' as any);
   };
 
   return (
@@ -129,7 +129,7 @@ export default function EditProfileScreen() {
 
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Profile Photo Section */}
-            <TouchableOpacity style={styles.photoSection} onPress={handleChangeProfilePhoto}>
+            <TouchableOpacity style={styles.photoSection} onPress={handleChangePhoto}>
               <View style={styles.profilePhoto}>
                 <Text style={styles.photoPlaceholder}>👤</Text>
               </View>
@@ -266,7 +266,7 @@ export default function EditProfileScreen() {
 
             {/* Additional Options */}
             <View style={styles.additionalOptions}>
-              <TouchableOpacity style={styles.optionButton} onPress={handleVerifyAccount}>
+              <TouchableOpacity style={styles.optionButton} onPress={handleIdVerification}>
                 <View style={styles.optionLeft}>
                   <Text style={styles.optionIcon}>✅</Text>
                   <View>

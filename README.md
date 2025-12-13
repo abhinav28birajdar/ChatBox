@@ -1,50 +1,20 @@
-# Welcome to your Expo app 👋
+# ChatBox
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+![ChatBox Icon](./assets/images/icon.png)
 
-## Get started
+A modern, production-ready React Native chat application powered by Expo and Supabase.
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+- **Real-time Messaging** - Instant message delivery with Supabase Realtime
+- **Secure Authentication** - Email/password auth with encrypted credential storage
+- **Group & Direct Chats** - Support for one-on-one and group conversations
+- **Light & Dark Mode** - Beautiful themes with system auto-detection
+- **File Uploads** - Share images and files with secure cloud storage
+- **Push Notifications** - Stay connected with instant message alerts
+- **Offline Support** - Graceful handling of network interruptions
+- **Modern UI/UX** - Smooth animations and polished design
 
-2. Start the app
+## About
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+ChatBox is built with cutting-edge technologies including React Native, Expo, Supabase, and TypeScript. It features a complete production-grade architecture with Row-Level Security, real-time subscriptions, encrypted secure storage, and comprehensive error handling. The app is optimized for performance with FlashList, image caching, and memoized components, providing a smooth user experience on both iOS and Android platforms.

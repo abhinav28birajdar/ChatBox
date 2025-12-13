@@ -1,16 +1,16 @@
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { useRouter } from 'expo-router';
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
+import {
+  Linking,
   ScrollView,
-  Linking
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { ThemedView } from '@/components/themed-view';
-import { ThemedText } from '@/components/themed-text';
 
 interface HelpOption {
   id: string;
@@ -37,8 +37,8 @@ export default function AccountRecoveryHelpScreen() {
       description: 'Get recovery code via SMS if you have phone verification enabled',
       icon: '📱',
       action: () => {
-        // TODO: Navigate to SMS recovery
-        router.push('/(auth)/sms-recovery');
+        // Feature not yet implemented
+        alert('SMS recovery coming soon');
       }
     },
     {
@@ -47,8 +47,8 @@ export default function AccountRecoveryHelpScreen() {
       description: 'Enter one of your saved backup authentication codes',
       icon: '🔑',
       action: () => {
-        // TODO: Navigate to backup code entry
-        router.push('/(auth)/backup-codes');
+        // Feature not yet implemented
+        alert('Backup codes feature coming soon');
       }
     },
     {
@@ -63,7 +63,10 @@ export default function AccountRecoveryHelpScreen() {
       title: 'Contact Support',
       description: 'Get help from our support team for manual account recovery',
       icon: '💬',
-      action: () => router.push('/support/contact')
+      action: () => {
+        // Feature not yet implemented
+        alert('Support contact feature coming soon');
+      }
     },
     {
       id: 'documentation',

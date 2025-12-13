@@ -1,13 +1,14 @@
 /**
  * Avatar Component
  * User avatar with fallback and status indicator
+ * Optimized with React.memo for better performance
  */
 
 import { typography } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { Image } from 'expo-image';
 import { MotiView } from 'moti';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 
 export interface AvatarProps {
@@ -20,7 +21,7 @@ export interface AvatarProps {
   textStyle?: TextStyle;
 }
 
-export function Avatar({
+export const Avatar = React.memo(function Avatar({
   size = 40,
   imageUri,
   name = '',
@@ -31,7 +32,7 @@ export function Avatar({
 }: AvatarProps) {
   const theme = useTheme();
 
-  const getInitials = (name: string) => {
+  const getInitials = useMemo(() => {
     if (!name) return '?';
     
     const names = name.trim().split(' ');
@@ -40,9 +41,9 @@ export function Avatar({
     }
     
     return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
-  };
+  }, [name]);
 
-  const getStatusColor = () => {
+  const statusColor = useMemo(() => {
     switch (status) {
       case 'online':
         return theme.colors.success;
@@ -55,7 +56,7 @@ export function Avatar({
       default:
         return theme.colors.textMuted;
     }
-  };
+  }, [status, theme.colors]);
 
   const avatarStyle = [
     styles.avatar,
@@ -78,17 +79,17 @@ export function Avatar({
   ];
 
   const statusSize = size * 0.25;
-  const statusStyle = {
+  const statusStyle = useMemo(() => ({
     position: 'absolute' as const,
     bottom: 0,
     right: 0,
     width: statusSize,
     height: statusSize,
     borderRadius: statusSize / 2,
-    backgroundColor: getStatusColor(),
+    backgroundColor: statusColor,
     borderWidth: 2,
     borderColor: theme.colors.background,
-  };
+  }), [statusSize, statusColor, theme.colors.background]);
 
   return (
     <MotiView
@@ -105,11 +106,12 @@ export function Avatar({
             contentFit="cover"
             placeholder={null}
             transition={200}
+            cachePolicy="memory-disk"
           />
         ) : (
           <View style={styles.fallback}>
             <Text style={initialsTextStyle}>
-              {getInitials(name)}
+              {getInitials}
             </Text>
           </View>
         )}
@@ -130,7 +132,7 @@ export function Avatar({
       )}
     </MotiView>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

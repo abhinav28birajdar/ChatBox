@@ -295,11 +295,11 @@ export const Input = forwardRef<InputRef, InputProps>(({
             activeOpacity={0.7}
           >
             <IconSymbol
-              name={
+              name={(
                 secureTextEntry 
                   ? (isSecure ? 'eye.slash' : 'eye')
                   : rightIcon!
-              }
+              ) as any}
               size={20}
               color={isFocused ? theme.colors.primary : theme.colors.icon}
             />
