@@ -1,118 +1,87 @@
-# ChatBox - Real-Time Community & Messaging Platform
+# Aakar
 
-<div align="center">
-  <img src="./assets/icon.png" width="120" height="120" alt="ChatBox Logo" />
-  <br />
-  <h1>ChatBox</h1>
-  <p><strong>Connect. Chat. Belong.</strong></p>
-  <p>A premium, Discord-inspired mobile ecosystem built for scalable real-time communities.</p>
-
-  <p align="center">
-    <a href="https://github.com/abhinav28birajdar/ChatBox/tree/main">
-      <img src="https://img.shields.io/badge/View_Main_Branch-3178C6?style=for-the-badge&logo=github&logoColor=white" alt="Main Branch" />
-    </a>
-    <a href="https://firebase.google.com/">
-      <img src="https://img.shields.io/badge/Backend_Powered_by-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
-    </a>
-  </p>
-</div>
+**Aakar** is a full-featured, production-grade super-app for Android built with **Expo SDK 54**, **React Native 0.81 (New Architecture)**, **TypeScript**, and **Firebase**. It combines an e-commerce marketplace, real-time community chat, social discovery, and a multi-role admin system in a single cohesive product.
 
 ---
 
-## 🚀 Status: Active Development & Architecture
-**ChatBox** has evolved from a high-fidelity UI prototype into a fully functional distributed system. We are actively implementing the **Real-Time Architecture** using **React Native (Expo)** on the frontend and **Firebase** serverless infrastructure on the backend.
+## Features
 
-The current focus is on optimizing data synchronization, reducing latency for instant messaging, and managing complex server/channel relationships.
+### Marketplace
+- Product discovery with search, categories, and trending sections
+- Full product detail pages with live inventory via Firestore
+- Shopping cart with quantity management
+- Multi-step checkout (address → payment → success)
+- Order placement and live order tracking
 
----
+### Chat & Community
+- Direct Messages (1-on-1) with real-time Firestore sync
+- Community Servers with text channels, categories, and roles
+- Message reactions, typing indicators (Firebase Realtime Database), and media sharing
+- Friend system — send, accept, decline, and block
 
-## 🛠️ Tech Stack
+### Seller Portal
+- Dedicated seller dashboard with revenue analytics
+- Product inventory management (add, edit, delete, pagination)
+- Order fulfilment and earnings overview
 
-<p align="left">
-  <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" />
-  <img src="https://img.shields.io/badge/Expo-1B1F23?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
-  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
-  <img src="https://img.shields.io/badge/FCM_(Cloud_Messaging)-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="FCM" />
-  <img src="https://img.shields.io/badge/Expo_Notifications-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo Notifications" />
-  <img src="https://img.shields.io/badge/Reanimated-FF5722?style=for-the-badge&logo=framer&logoColor=white" alt="Reanimated" />
-</p>
+### Admin Console
+- User management with role assignment
+- Seller approval workflow (pending → approved / rejected)
+- Platform-wide analytics dashboard
 
-* **Frontend:** React Native with Expo (Managed Workflow)
-* **Language:** TypeScript (Strict Typing)
-* **Navigation:** Expo Router (File-based Routing & Deep Linking)
-* **Backend/Database:** Firebase (Firestore NoSQL & Realtime Database)
-* **Authentication:** Firebase Auth (Email/Password, OAuth, & Session Management)
-* **Real-time & Notifications:**
-    * **FCM (Firebase Cloud Messaging):** High-priority push alerts for Mentions/DMs.
-    * **Firestore Listeners:** WebSockets for instant message syncing and typing indicators.
-* **Storage:** Firebase Cloud Storage (Media optimization & delivery)
-* **Design System:** Custom Dark Theme (`#120C17` Background, `#FFE031` Accents)
+### Authentication & Identity
+- Email / Password registration with 3-step onboarding
+- Google Sign-In
+- Phone OTP (Firebase phone auth)
+- Email verification gate
+- Role-based routing: `customer`, `seller`, `admin`
 
----
-
-## ⚙️ Core Modules & Implementation
-
-### 💬 Real-Time Messaging Engine
-* **Instant Communication:**
-    * **Snapshot Listeners:** Messages sync instantly across devices using Firestore `onSnapshot` listeners.
-    * **Media Pipeline:** Upload images, voice notes, and files directly to Firebase Storage with optimistic UI updates.
-    * **CRUD Operations:** Edit and delete messages with real-time propagation to all clients.
-* **Presence System:**
-    * **Live Status:** Real-time tracking of "Online," "Idle," and "Do Not Disturb" states.
-    * **Typing Indicators:** Ephemeral state management to show when users are composing.
-
-### 🌐 Server & Community Management
-* **Complex Data Modeling:**
-    * **Hierarchical Structure:** `Server` -> `Category` -> `Channel` (Text/Voice).
-    * **Sidebar Interface:** Efficient context switching between Servers and Direct Messages.
-* **Role-Based Access Control (RBAC):**
-    * **Permissions:** Admin, Moderator, and Member roles enforcing read/write access via Firestore Security Rules.
-    * **Invite System:** Dynamic link generation for onboarding new members.
-
-### 👤 Identity & Social Graph
-* **Profile Ecosystem:**
-    * **Data Persistence:** User preferences, avatars, and bio stored in Firestore `users` collection.
-    * **Stats Aggregation:** Real-time calculation of join dates and server roles.
-* **Friend System:**
-    * **Graph Logic:** Manage Friend Requests (Pending/Accepted) and Blocked Users lists.
-
-### 🔔 Notification Center
-* **Smart Alerts:**
-    * **Push Notification Service:** Integration of **FCM** and **Expo Notifications** to handle background alerts.
-    * **Foreground Handling:** In-app toasts for interactions while the app is open.
+### System
+- Dark / Light / System theme with AsyncStorage persistence
+- Real-time push notifications (Expo Push + Firebase Cloud Messaging)
+- In-app notification centre with read/unread tracking
+- Offline detection overlay
+- Full onboarding flow with permission requests
 
 ---
 
-## 🎨 Design Highlights
-While technically focused, the UI remains a core differentiator:
-* **Premium Palette:** Deep purple backgrounds (`#120C17`) with vibrant yellow highlights (`#FFE031`).
-* **Haptic Feedback:** Tactile response on button presses using `expo-haptics`.
-* **Smooth Transitions:** Shared Element Transitions and layout animations using `React Native Reanimated`.
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Expo SDK ~54.0.32 + React Native 0.81.5 |
+| Language | TypeScript ~5.9.2 (strict) |
+| Navigation | expo-router ~6.0.23 (file-based, typed routes) |
+| Auth | @react-native-firebase/auth v21 + Google Sign-In |
+| Database | @react-native-firebase/firestore (real-time `onSnapshot`) |
+| Realtime DB | @react-native-firebase/database (typing indicators) |
+| Storage | @react-native-firebase/storage (media uploads) |
+| State | React Context API (Auth, App, Chat, Server, Friend, Notifications) |
+| UI | @expo/vector-icons, expo-linear-gradient, react-native-reanimated ~4.1 |
+| Notifications | expo-notifications + react-native-toast-message |
+| Architecture | New Architecture enabled, Hermes JS engine |
 
 ---
 
-## 🎯 Next Goals (Roadmap)
-- [ ] **Voice & Video:** Implement WebRTC for live voice channels and low-latency video calls.
-- [ ] **E2E Encryption:** Secure private Direct Messages with End-to-End Encryption signals.
-- [ ] **Bots & Integrations:** Build an API layer for automated bots and webhooks.
-- [ ] **Global Search:** Implement Algolia/ElasticSearch for querying messages across servers.
+## User Roles
+
+| Role | Capabilities |
+|---|---|
+| `customer` | Browse, purchase, chat, follow, manage orders |
+| `seller` | All customer capabilities + product & order management + revenue analytics |
+| `admin` | All seller capabilities + user management + seller approvals + platform analytics |
 
 ---
 
-### 📂 View Latest Progress
-This branch focuses on the implementation of backend logic, Firebase integration, and real-time functional components. To view the stable version or contribute:
+## CI/CD
 
-👉 **Check the [Main Branch](https://github.com/abhinav28birajdar/ChatBox/tree/main)**
+GitHub Actions workflow at `.github/workflows/build.yml`:
+- **Type check** on every push/PR
+- **EAS Build** (Android APK or AAB) triggered manually or on push to `main`
+- **Firebase rules deployment** on push to `main`
 
 ---
 
-### 🔗 Quick Links
+## License
 
-* [**View Main Branch Code**](https://github.com/abhinav28birajdar/ChatBox/tree/main)
-* [**Report a Bug**](https://github.com/abhinav28birajdar/ChatBox/issues)
-* [**Request a Feature**](https://github.com/abhinav28birajdar/ChatBox/issues)
-
-<br />
-
-<p align="center">Made with ❤️ for the Community.</p>
+Private — All rights reserved.
