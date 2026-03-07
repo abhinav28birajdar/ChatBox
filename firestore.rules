@@ -27,18 +27,17 @@ service cloud.firestore {
     // ─── User profiles ─────────────────────────────────────────
     match /users/{userId} {
       allow read: if isAuthenticated();
-      allow create: if isOwner(userId)
-        && isValidString(request.resource.data.displayName, 1, 50)
-        && isValidString(request.resource.data.username, 3, 20)
-        && request.resource.data.uid == userId
-        && isReasonableSize();
-      allow update: if isOwner(userId)
-        && (!('uid' in request.resource.data) || request.resource.data.uid == userId)
-        && (!('id' in request.resource.data) || request.resource.data.id == userId)
-        && (!('email' in request.resource.data) || request.resource.data.email == resource.data.email)
-        && (!('createdAt' in request.resource.data) || request.resource.data.createdAt == resource.data.createdAt)
-        && isReasonableSize();
-      allow delete: if isOwner(userId);
+      allow write: if isOwner(userId);
+
+      // ── Per-user notifications subcollection ────────────────
+      match /notifications/{notifId} {
+        allow read: if isOwner(userId);
+        allow create: if isAuthenticated()
+          && request.resource.data.isRead is bool
+          && request.resource.data.type is string;
+        allow update: if isOwner(userId);
+        allow delete: if isOwner(userId);
+      }
     }
     
     // ─── Servers ────────────────────────────────────────────────
@@ -89,7 +88,7 @@ service cloud.firestore {
       }
     }
     
-    // ─── Direct Messages ────────────────────────────────────────
+    // ─── Direct Messages (legacy path) ─────────────────────────
     match /directMessages/{chatId} {
       allow read: if isAuthenticated() && request.auth.uid in resource.data.participants;
       allow create: if isAuthenticated()
@@ -108,6 +107,34 @@ service cloud.firestore {
         allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
       }
     }
+
+    // ─── Conversations (app primary DM path) ───────────────────
+    match /conversations/{chatId} {
+      allow read: if isAuthenticated()
+        && request.auth.uid in resource.data.participants;
+      allow create: if isAuthenticated()
+        && request.auth.uid in request.resource.data.participants
+        && request.resource.data.participants.size() >= 2
+        && request.resource.data.participants.size() <= 10
+        && isReasonableSize();
+      allow update: if isAuthenticated()
+        && request.auth.uid in resource.data.participants
+        && isReasonableSize();
+      allow delete: if false; // Conversations are not deleted via client
+
+      match /messages/{messageId} {
+        allow read: if isAuthenticated()
+          && request.auth.uid in get(/databases/$(database)/documents/conversations/$(chatId)).data.participants;
+        allow create: if isAuthenticated()
+          && request.auth.uid in get(/databases/$(database)/documents/conversations/$(chatId)).data.participants
+          && request.resource.data.senderId == request.auth.uid
+          && isReasonableSize();
+        allow update: if isAuthenticated()
+          && request.auth.uid in get(/databases/$(database)/documents/conversations/$(chatId)).data.participants;
+        allow delete: if isAuthenticated()
+          && resource.data.senderId == request.auth.uid;
+      }
+    }
     
     // ─── Friendships ────────────────────────────────────────────
     match /friendships/{friendshipId} {
@@ -120,6 +147,14 @@ service cloud.firestore {
         && (request.auth.uid == resource.data.userId || request.auth.uid == resource.data.friendId);
     }
 
+    // ─── Communities ────────────────────────────────────────────
+    match /communities/{communityId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
+    }
+
     // ─── Blocks ─────────────────────────────────────────────────
     match /blocks/{blockId} {
       allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
@@ -127,10 +162,12 @@ service cloud.firestore {
       allow delete: if isAuthenticated() && request.auth.uid == resource.data.userId;
     }
     
-    // ─── Notifications ──────────────────────────────────────────
+    // ─── Notifications (top-level, kept for backward compatibility) ─
+    // New notifications are stored in users/{uid}/notifications subcollection.
     match /notifications/{notifId} {
       allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
         && request.resource.data.userId is string
         && request.resource.data.userId.size() > 0;
       allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
@@ -173,11 +210,28 @@ service cloud.firestore {
       );
     }
 
+    // ─── Wishlist ──────────────────────────────────────────────
+    match /wishlist/{itemId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // ─── Addresses ──────────────────────────────────────────────
+    match /addresses/{addressId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
     // ─── Categories ────────────────────────────────────────────
     match /categories/{catId} {
       allow read: if true;
       allow write: if isAdmin();
     }
+
 
     // ─── Default deny ───────────────────────────────────────────
     match /{document=**} {

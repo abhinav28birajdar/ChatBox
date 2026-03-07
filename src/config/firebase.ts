@@ -1,28 +1,27 @@
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
-import database from '@react-native-firebase/database';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getDatabase } from 'firebase/database';
+import { getStorage } from 'firebase/storage';
 
-// Native Firebase initializes automatically using google-services.json on Android
-// and GoogleService-Info.plist on iOS.
-
-export const firebaseAuth = auth();
-export const db = firestore();
-export const storageInstance = storage();
-export const realtimeDb = database();
-
-// For consistency with existing code
-export const authInstance = firebaseAuth;
-export const storageRef = storageInstance;
-
-export {
-  authInstance as auth,
-  storageInstance as storage,
+const firebaseConfig = {
+    apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.EXPO_PUBLIC_FIREBASE_DATABASE_URL,
+    projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
-export default {
-  auth: firebaseAuth,
-  db,
-  storage: storageInstance,
-  realtimeDb,
-};
+console.log('Initializing Firebase with Project ID:', firebaseConfig.projectId);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+if (!firebaseConfig.storageBucket) {
+    console.error('FIREBASE_STORAGE_BUCKET is missing! Check your .env file.');
+}
+
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const rtdb = getDatabase(app);
+export const storage = getStorage(app, firebaseConfig.storageBucket);
+export default app;

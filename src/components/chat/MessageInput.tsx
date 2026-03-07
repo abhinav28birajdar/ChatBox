@@ -1,210 +1,143 @@
-/**
- * MessageInput - Feature-rich message input with attachments and typing indicators
- */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Keyboard,
-  Platform,
+    View,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Platform,
+    Alert
 } from 'react-native';
+import { useTheme } from '../../hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
-import { useTheme } from '@/hooks/useTheme';
-import { Spacing } from '@/constants/Spacing';
-import { Typography } from '@/constants/Typography';
-import { Text } from '../ui/Text';
+import { VoiceMessagePlayer } from './VoiceMessagePlayer'; // To be created next
 
-interface Props {
-  onSend: (text: string) => void;
-  onAttachPress?: () => void;
-  onEmojiPress?: () => void;
-  onTyping?: () => void;
-  placeholder?: string;
-  replyingTo?: { name: string; content: string } | null;
-  onCancelReply?: () => void;
-  editingMessage?: { id: string; content: string } | null;
-  onCancelEdit?: () => void;
-  onSaveEdit?: (id: string, content: string) => void;
+interface MessageInputProps {
+    onSendMessage: (text: string, type: 'text' | 'image' | 'video' | 'audio' | 'file') => void;
+    conversationId: string;
+    onTyping: (isTyping: boolean) => void;
 }
 
-export const MessageInput = ({
-  onSend,
-  onAttachPress,
-  onEmojiPress,
-  onTyping,
-  placeholder = 'Type a message...',
-  replyingTo,
-  onCancelReply,
-  editingMessage,
-  onCancelEdit,
-  onSaveEdit,
-}: Props) => {
-  const { colors } = useTheme();
-  const [text, setText] = useState(editingMessage?.content || '');
-  const inputRef = useRef<TextInput>(null);
-  const typingTimeoutRef = useRef<any>(null);
+export const MessageInput: React.FC<MessageInputProps> = ({
+    onSendMessage,
+    conversationId,
+    onTyping
+}) => {
+    const { colors, isDark } = useTheme();
+    const [text, setText] = useState('');
+    const [isTyping, setIsTyping] = useState(false);
 
-  useEffect(() => {
-    if (editingMessage) {
-      setText(editingMessage.content);
-      inputRef.current?.focus();
-    }
-  }, [editingMessage]);
-
-  // Cleanup typing timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    const handleTextChange = (val: string) => {
+        setText(val);
+        if (!isTyping && val.length > 0) {
+            setIsTyping(true);
+            onTyping(true);
+        } else if (isTyping && val.length === 0) {
+            setIsTyping(false);
+            onTyping(false);
+        }
     };
-  }, []);
 
-  const handleTextChange = (t: string) => {
-    setText(t);
-    if (onTyping) {
-      // Fire typing immediately on first keystroke, then debounce the stop
-      onTyping();
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = setTimeout(() => {
-        // Typing stopped - timeout fires after 2s of inactivity
-      }, 2000);
-    }
-  };
+    const handleSend = () => {
+        if (text.trim().length === 0) return;
+        onSendMessage(text, 'text');
+        setText('');
+        setIsTyping(false);
+        onTyping(false);
+    };
 
-  const handleSend = () => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
+    const handleAttach = () => {
+        Alert.alert('Attach', 'Feature coming soon!', [{ text: 'OK' }]);
+    };
 
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
-    if (editingMessage && onSaveEdit) {
-      onSaveEdit(editingMessage.id, trimmed);
-    } else {
-      onSend(trimmed);
-    }
-    setText('');
-    inputRef.current?.blur();
-  };
-
-  return (
-    <View style={[styles.wrapper, { backgroundColor: colors.background, borderTopColor: colors.border }]}>
-      {/* Reply/Edit Bar */}
-      {(replyingTo || editingMessage) && (
-        <View style={[styles.replyBar, { backgroundColor: colors.surface }]}>
-          <View style={[styles.replyIndicator, { backgroundColor: colors.primary }]} />
-          <View style={styles.replyContent}>
-            <Text variant="caption" color={colors.primary}>
-              {editingMessage ? 'Editing message' : `Replying to ${replyingTo?.name}`}
-            </Text>
-            <Text variant="caption" color={colors.textSecondary} numberOfLines={1}>
-              {editingMessage?.content || replyingTo?.content}
-            </Text>
-          </View>
-          <TouchableOpacity onPress={editingMessage ? onCancelEdit : onCancelReply}>
-            <Ionicons name="close" size={20} color={colors.textSecondary} />
-          </TouchableOpacity>
-        </View>
-      )}
-
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.iconButton} onPress={onAttachPress}>
-          <Ionicons name="add-circle-outline" size={26} color={colors.textSecondary} />
-        </TouchableOpacity>
-
-        <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <TextInput
-            ref={inputRef}
-            style={[styles.input, { color: colors.text }]}
-            value={text}
-            onChangeText={handleTextChange}
-            placeholder={placeholder}
-            placeholderTextColor={colors.textSecondary}
-            multiline
-            maxLength={2000}
-            textAlignVertical="center"
-          />
-          <TouchableOpacity style={styles.emojiButton} onPress={onEmojiPress}>
-            <Ionicons name="happy-outline" size={22} color={colors.textSecondary} />
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity
-          style={[
-            styles.sendButton,
-            { backgroundColor: text.trim() ? colors.primary : colors.surface },
-          ]}
-          onPress={handleSend}
-          disabled={!text.trim()}
+    return (
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+            style={[styles.container, { backgroundColor: colors.background, borderTopColor: colors.border }]}
         >
-          <Ionicons
-            name={editingMessage ? 'checkmark' : 'send'}
-            size={20}
-            color={text.trim() ? colors.background : colors.textSecondary}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+            <View style={styles.inputRow}>
+                <TouchableOpacity onPress={handleAttach} style={styles.iconButton}>
+                    <Ionicons name="add" size={24} color={colors.primary} />
+                </TouchableOpacity>
+
+                <View style={[
+                    styles.inputWrapper,
+                    { backgroundColor: isDark ? colors.surface : colors.primaryLight, borderColor: colors.border }
+                ]}>
+                    <TextInput
+                        style={[styles.input, { color: colors.text }]}
+                        placeholder="Type a message..."
+                        placeholderTextColor={colors.textMuted}
+                        value={text}
+                        onChangeText={handleTextChange}
+                        multiline
+                        maxLength={1000}
+                    />
+                    <TouchableOpacity style={styles.emojiButton}>
+                        <Ionicons name="happy-outline" size={22} color={colors.textMuted} />
+                    </TouchableOpacity>
+                </View>
+
+                {text.length > 0 ? (
+                    <TouchableOpacity
+                        onPress={handleSend}
+                        style={[styles.sendButton, { backgroundColor: colors.primary }]}
+                    >
+                        <Ionicons name="send" size={20} color="#FFFFFF" />
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity style={styles.micButton}>
+                        <Ionicons name="mic-outline" size={24} color={colors.primary} />
+                    </TouchableOpacity>
+                )}
+            </View>
+        </KeyboardAvoidingView>
+    );
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    paddingBottom: Platform.OS === 'ios' ? 20 : 0, // Padding for safe area if not using ScreenWrapper bottom
-  },
-  replyBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-  },
-  replyIndicator: {
-    width: 3,
-    height: '100%',
-    borderRadius: 2,
-    marginRight: Spacing.sm,
-  },
-  replyContent: {
-    flex: 1,
-  },
-  container: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.sm,
-  },
-  iconButton: {
-    padding: Spacing.sm,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    borderRadius: 20,
-    borderWidth: 1,
-    paddingHorizontal: Spacing.md,
-    marginHorizontal: Spacing.xs,
-    maxHeight: 120,
-  },
-  input: {
-    flex: 1,
-    ...Typography.body,
-    paddingVertical: Spacing.sm,
-    minHeight: 40,
-  },
-  emojiButton: {
-    paddingBottom: Spacing.sm,
-    paddingLeft: Spacing.xs,
-  },
-  sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+    container: {
+        paddingHorizontal: 8,
+        paddingVertical: 10,
+        borderTopWidth: 1,
+    },
+    inputRow: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+    },
+    inputWrapper: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderRadius: 24,
+        paddingHorizontal: 12,
+        marginHorizontal: 8,
+        minHeight: 44,
+        maxHeight: 120,
+        borderWidth: 1,
+    },
+    input: {
+        flex: 1,
+        fontSize: 16,
+        paddingTop: 10,
+        paddingBottom: 10,
+    },
+    iconButton: {
+        padding: 8,
+    },
+    emojiButton: {
+        padding: 4,
+    },
+    sendButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 0,
+    },
+    micButton: {
+        padding: 8,
+    },
 });

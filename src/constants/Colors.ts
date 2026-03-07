@@ -1,34 +1,37 @@
-export const Colors = {
-  light: {
-    primary: '#D4FF00', // Neon Yellow
-    secondary: '#2D1F35',
-    accent: '#8A4FFF',
+export const LightTheme = {
+    primary: '#fca311', // Bright Yellow/Orange for Light Mode
+    primaryLight: '#FFF8CC',
+    secondary: '#8B5CF6',
     background: '#FFFFFF',
-    surface: '#F5F5F7',
-    text: '#1A1221',
-    textSecondary: '#666666',
-    border: '#E1E1E1',
-    error: '#FF3B30',
-    success: '#34C759',
-    warning: '#FFCC00',
-    tabBar: '#FFFFFF',
-    card: '#F5F5F7',
-    overlay: 'rgba(0,0,0,0.5)',
-  },
-  dark: {
-    primary: '#D4FF00', // Neon Yellow
-    secondary: '#8A4FFF', // Purple
-    accent: '#BFFF00',
-    background: '#000000', // Pure Black for OLED
-    surface: '#121212', // Darker surface
+    surface: '#F5F5F5',
+    card: '#FFFFFF',
+    text: '#110D18',
+    textSecondary: '#64748B',
+    textMuted: '#94A3B8',
+    border: '#E2E8F0',
+    success: '#10B981',
+    warning: '#F59E0B',
+    error: '#EF4444',
+    info: '#3B82F6',
+    online: '#22C55E',
+    offline: '#94A3B8',
+};
+
+export const DarkTheme = {
+    primary: '#FFD600', // Bright Yellow
+    primaryLight: '#332B00',
+    secondary: '#8B5CF6',
+    background: '#110D18', // Deep purple/black
+    surface: '#1A1625', // Slightly lighter card color
+    card: '#1A1625',
     text: '#FFFFFF',
-    textSecondary: '#A198A7',
-    border: '#2A2A2A',
-    error: '#FF453A',
-    success: '#32D74B',
-    warning: '#FFD60A',
-    tabBar: '#0A0A0A',
-    card: '#161616',
-    overlay: 'rgba(0,0,0,0.7)',
-  }
+    textSecondary: '#94A3B8',
+    textMuted: '#64748B',
+    border: '#2D2938',
+    success: '#10B981',
+    warning: '#F59E0B',
+    error: '#EF4444',
+    info: '#3B82F6',
+    online: '#22C55E',
+    offline: '#4B5563',
 };

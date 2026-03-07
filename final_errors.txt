@@ -1,0 +1,12 @@
+﻿src/components/profile/FriendCard.tsx(65,25): error TS2322: Type '(() => void) | undefined' is not assignable to type '() => void'.
+  Type 'undefined' is not assignable to type '() => void'.
+src/screens/notifications/NotificationScreen.tsx(26,17): error TS2741: Property 'isRead' is missing in type '{ id: string; type: "message"; title: string; body: string; data: { conversationId: string; }; createdAt: string; read: false; }' but required in type 'NotificationItem'.
+src/screens/notifications/NotificationScreen.tsx(35,17): error TS2741: Property 'isRead' is missing in type '{ id: string; type: "friend_request"; title: string; body: string; data: { userId: string; }; createdAt: string; read: true; }' but required in type 'NotificationItem'.
+src/screens/notifications/NotificationScreen.tsx(44,17): error TS2741: Property 'isRead' is missing in type '{ id: string; type: "order_status"; title: string; body: string; data: { orderId: string; }; createdAt: string; read: false; }' but required in type 'NotificationItem'.
+src/screens/profile/FriendsScreen.tsx(62,57): error TS2551: Property 'getOrCreateConversation' does not exist on type '{ subscribeToMessages: (conversationId: string, callback: (msgs: Message[]) => void) => Unsubscribe; sendMessage: (conversationId: string, message: Partial<Message>) => Promise<...>; toggleReaction: (conversationId: string, messageId: string, uid: string, emoji: string) => Promise<...>; markAsRead: (conversationId: ...'. Did you mean 'getConversations'?
+src/screens/profile/FriendsScreen.tsx(142,25): error TS2322: Type '{ user: FirestoreUser; isFriend: boolean | undefined; isPending: boolean; isRequestSent: boolean; onAction: () => Promise<void>; onMessage: () => Promise<void>; }' is not assignable to type 'IntrinsicAttributes & FriendCardProps'.
+  Property 'user' does not exist on type 'IntrinsicAttributes & FriendCardProps'.
+src/screens/profile/SettingsScreen.tsx(143,90): error TS2322: Type '{ pushNotifications: boolean; theme?: "light" | "dark" | "system" | undefined; notifications?: boolean | undefined; locationSharing?: boolean; darkMode?: boolean; }' is not assignable to type 'UserSettings'.
+  Types of property 'theme' are incompatible.
+    Type '"light" | "dark" | "system" | undefined' is not assignable to type '"light" | "dark" | "system"'.
+      Type 'undefined' is not assignable to type '"light" | "dark" | "system"'.

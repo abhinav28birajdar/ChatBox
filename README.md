@@ -1,87 +1,59 @@
-# Aakar
+<div align="center">
 
-**Aakar** is a full-featured, production-grade super-app for Android built with **Expo SDK 54**, **React Native 0.81 (New Architecture)**, **TypeScript**, and **Firebase**. It combines an e-commerce marketplace, real-time community chat, social discovery, and a multi-role admin system in a single cohesive product.
+# 💬 ChatBox
 
----
+A sleek, real-time social chatting and community engine.
 
-## Features
+[![React Native](https://img.shields.io/badge/react_native-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](#)
+[![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)](#)
+[![Expo](https://img.shields.io/badge/expo-1C1E24?style=for-the-badge&logo=expo&logoColor=#D04A37)](#)
+[![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)](#)
 
-### Marketplace
-- Product discovery with search, categories, and trending sections
-- Full product detail pages with live inventory via Firestore
-- Shopping cart with quantity management
-- Multi-step checkout (address → payment → success)
-- Order placement and live order tracking
+</div>
 
-### Chat & Community
-- Direct Messages (1-on-1) with real-time Firestore sync
-- Community Servers with text channels, categories, and roles
-- Message reactions, typing indicators (Firebase Realtime Database), and media sharing
-- Friend system — send, accept, decline, and block
+## 🚀 Concept
 
-### Seller Portal
-- Dedicated seller dashboard with revenue analytics
-- Product inventory management (add, edit, delete, pagination)
-- Order fulfilment and earnings overview
-
-### Admin Console
-- User management with role assignment
-- Seller approval workflow (pending → approved / rejected)
-- Platform-wide analytics dashboard
-
-### Authentication & Identity
-- Email / Password registration with 3-step onboarding
-- Google Sign-In
-- Phone OTP (Firebase phone auth)
-- Email verification gate
-- Role-based routing: `customer`, `seller`, `admin`
-
-### System
-- Dark / Light / System theme with AsyncStorage persistence
-- Real-time push notifications (Expo Push + Firebase Cloud Messaging)
-- In-app notification centre with read/unread tracking
-- Offline detection overlay
-- Full onboarding flow with permission requests
+**ChatBox** is a high-performance, real-time chatting and community application optimized natively via Expo. It features extremely fast real-time synchronization backed by Firebase, allowing users to discover communities, swap dynamic QR codes, and chat on the fly with animated UI components seamlessly integrating within iOS and Android simultaneously.
 
 ---
 
-## Tech Stack
+## ✨ Features
 
-| Layer | Technology |
+- **Real-Time Direct Messaging**: Seamless, instantaneous 1-on-1 chatting utilizing **🔥 Firestore** Web Sockets.
+- **Dynamic Communities**: Discover, join, and create live topic-based servers/communities categorized exactly by your interests (🎮 Games, 🎸 Music, 💻 Tech). 
+- **QR Code Encapsulation**: Connect with friends easier than ever by generating and scanning dynamic, fully-native QR codes linking explicitly to user ids.
+- **User Authentication**: Secure Login, User Registration, Password Resets, and Profile Management powered strictly by **🔥 Firebase Auth**.
+
+---
+
+## 🛠️ Technology Stack
+
+| Ecosystem | Technology |
 |---|---|
-| Framework | Expo SDK ~54.0.32 + React Native 0.81.5 |
-| Language | TypeScript ~5.9.2 (strict) |
-| Navigation | expo-router ~6.0.23 (file-based, typed routes) |
-| Auth | @react-native-firebase/auth v21 + Google Sign-In |
-| Database | @react-native-firebase/firestore (real-time `onSnapshot`) |
-| Realtime DB | @react-native-firebase/database (typing indicators) |
-| Storage | @react-native-firebase/storage (media uploads) |
-| State | React Context API (Auth, App, Chat, Server, Friend, Notifications) |
-| UI | @expo/vector-icons, expo-linear-gradient, react-native-reanimated ~4.1 |
-| Notifications | expo-notifications + react-native-toast-message |
-| Architecture | New Architecture enabled, Hermes JS engine |
+| **🎨 Framework** | React Native, Expo SDK 54, React Navigation V7 |
+| **☁️ Backend** | 🔥 Firebase (Firestore + Realtime Database) |
+| **📸 Storage** | 🔥 Firebase Storage (Profile Uploads / Images) |
+| **💅 Styling** | React Native Reanimated (Spring Dynamics), Feather Icons |
+| **🏗️ Language** | TypeScript (Strict) |
 
 ---
 
-## User Roles
+## 📱 Running Locally
 
-| Role | Capabilities |
-|---|---|
-| `customer` | Browse, purchase, chat, follow, manage orders |
-| `seller` | All customer capabilities + product & order management + revenue analytics |
-| `admin` | All seller capabilities + user management + seller approvals + platform analytics |
+The codebase has been tightly refactored for rapid testing and performance! Get it running natively in just a few steps:
 
----
-
-## CI/CD
-
-GitHub Actions workflow at `.github/workflows/build.yml`:
-- **Type check** on every push/PR
-- **EAS Build** (Android APK or AAB) triggered manually or on push to `main`
-- **Firebase rules deployment** on push to `main`
+1. Clone this repository locally.
+2. Initialize and lock dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the bleeding-edge Expo bundler:
+   ```bash
+   npx expo start
+   ```
+4. Open your phone camera and scan the generated QR code provided inside your terminal using **Expo Go** (available on iOS and Android). That's it!
 
 ---
 
-## License
-
+## ⚖️ License
 Private — All rights reserved.

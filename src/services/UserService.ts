@@ -1,163 +1,131 @@
-import firestore from '@react-native-firebase/firestore';
-import { db, auth } from '@/config/firebase';
-import { UserProfile } from '@/types';
-import MediaService from './MediaService';
+import { doc, getDoc, updateDoc, query, collection, where, getDocs, arrayUnion, arrayRemove, serverTimestamp } from 'firebase/firestore';
+import { db } from '../config/firebase';
+import { FirestoreUser } from '../types/user';
+import { useAuthStore } from '../store/authStore';
 
-class UserService {
-    /**
-     * Update user profile data
-     */
-    async updateProfile(userId: string, data: Partial<UserProfile>): Promise<void> {
-        try {
-            const userRef = db.collection('users').doc(userId);
-
-            // Filter out fields that shouldn't be updated directly
-            const updates: any = { ...data };
-            delete updates.email;
-            delete updates.uid;
-            delete updates.id;
-            delete updates.createdAt;
-
-            await userRef.update({
-                ...updates,
-                updatedAt: firestore.FieldValue.serverTimestamp(),
-            });
-        } catch (error) {
-            console.error('Error updating profile:', error);
-            throw error;
+export const userService = {
+    getUser: async (uid: string): Promise<FirestoreUser | null> => {
+        const docSnap = await getDoc(doc(db, 'users', uid));
+        if (docSnap.exists()) {
+            return docSnap.data() as FirestoreUser;
         }
+        return null;
+    },
+
+    updateUser: async (uid: string, data: Partial<FirestoreUser>) => {
+        await updateDoc(doc(db, 'users', uid), data);
+    },
+
+    updateProfile: async (data: Partial<FirestoreUser>) => {
+        const { user } = useAuthStore.getState();
+        if (!user) throw new Error('Not authenticated');
+        await updateDoc(doc(db, 'users', user.uid), data);
+    },
+
+    updatePresence: async (uid: string, isOnline: boolean) => {
+        await updateDoc(doc(db, 'users', uid), {
+            isOnline,
+            lastSeen: serverTimestamp(),
+        });
+    },
+
+    searchUsers: async (searchTerm: string): Promise<FirestoreUser[]> => {
+        if (!searchTerm) return [];
+        const lowerSearch = searchTerm.toLowerCase();
+
+        // Query by displayName
+        const qDisplayName = query(
+            collection(db, 'users'),
+            where('displayName', '>=', searchTerm),
+            where('displayName', '<=', searchTerm + '\uf8ff')
+        );
+
+        // Query by username
+        const qUsername = query(
+            collection(db, 'users'),
+            where('username', '>=', lowerSearch),
+            where('username', '<=', lowerSearch + '\uf8ff')
+        );
+
+        // Query by email
+        const qEmail = query(
+            collection(db, 'users'),
+            where('email', '>=', lowerSearch),
+            where('email', '<=', lowerSearch + '\uf8ff')
+        );
+
+        const [snap1, snap2, snap3] = await Promise.all([
+            getDocs(qDisplayName),
+            getDocs(qUsername),
+            getDocs(qEmail)
+        ]);
+
+        const results = new Map<string, FirestoreUser>();
+        [...snap1.docs, ...snap2.docs, ...snap3.docs].forEach(doc => {
+            results.set(doc.id, doc.data() as FirestoreUser);
+        });
+
+        return Array.from(results.values());
+    },
+
+    sendFriendRequest: async (fromUid: string, toUid: string) => {
+        await updateDoc(doc(db, 'users', toUid), {
+            friendRequests: arrayUnion(fromUid)
+        });
+        await updateDoc(doc(db, 'users', fromUid), {
+            sentRequests: arrayUnion(toUid)
+        });
+    },
+
+    acceptFriendRequest: async (uid: string, friendUid: string) => {
+        await updateDoc(doc(db, 'users', uid), {
+            friendRequests: arrayRemove(friendUid),
+            friends: arrayUnion(friendUid)
+        });
+        await updateDoc(doc(db, 'users', friendUid), {
+            sentRequests: arrayRemove(uid),
+            friends: arrayUnion(uid)
+        });
+    },
+
+    declineFriendRequest: async (uid: string, friendUid: string) => {
+        await updateDoc(doc(db, 'users', uid), {
+            friendRequests: arrayRemove(friendUid)
+        });
+        await updateDoc(doc(db, 'users', friendUid), {
+            sentRequests: arrayRemove(uid)
+        });
+    },
+
+    blockUser: async (uid: string, blockUid: string) => {
+        await updateDoc(doc(db, 'users', uid), {
+            blockedUsers: arrayUnion(blockUid),
+            friends: arrayRemove(blockUid)
+        });
+        await updateDoc(doc(db, 'users', blockUid), {
+            friends: arrayRemove(uid)
+        });
+    },
+
+    unblockUser: async (uid: string, unblockUid: string) => {
+        await updateDoc(doc(db, 'users', uid), {
+            blockedUsers: arrayRemove(unblockUid)
+        });
+    },
+
+    getFriends: async (uid: string): Promise<FirestoreUser[]> => {
+        const user = await userService.getUser(uid);
+        if (!user || !user.friends || user.friends.length === 0) return [];
+        const q = query(collection(db, 'users'), where('uid', 'in', user.friends));
+        const snap = await getDocs(q);
+        return snap.docs.map(doc => doc.data() as FirestoreUser);
+    },
+
+    getPendingRequests: async (uid: string): Promise<FirestoreUser[]> => {
+        const user = await userService.getUser(uid);
+        if (!user || !user.friendRequests || user.friendRequests.length === 0) return [];
+        const q = query(collection(db, 'users'), where('uid', 'in', user.friendRequests));
+        const snap = await getDocs(q);
+        return snap.docs.map(doc => doc.data() as FirestoreUser);
     }
-
-    /**
-     * Update user settings (merges nested fields using dot notation)
-     */
-    async updateSettings(userId: string, settings: Partial<UserProfile['settings']>): Promise<void> {
-        try {
-            const userRef = db.collection('users').doc(userId);
-            // Use dot notation to merge nested settings instead of overwriting
-            const updates: Record<string, any> = {
-                updatedAt: firestore.FieldValue.serverTimestamp(),
-            };
-            if (settings?.privacy) {
-                Object.entries(settings.privacy).forEach(([key, value]) => {
-                    updates[`settings.privacy.${key}`] = value;
-                });
-            }
-            if (settings?.notifications) {
-                Object.entries(settings.notifications).forEach(([key, value]) => {
-                    updates[`settings.notifications.${key}`] = value;
-                });
-            }
-            await userRef.update(updates);
-        } catch (error) {
-            console.error('Error updating settings:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Update profile avatar
-     */
-    async updateAvatar(userId: string, uri: string): Promise<string> {
-        try {
-            const path = `users/${userId}/avatar.jpg`;
-            const downloadUrl = await MediaService.uploadImage(uri, path);
-
-            await this.updateProfile(userId, { avatar: downloadUrl } as any);
-            return downloadUrl;
-        } catch (error) {
-            console.error('Error updating avatar:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Update profile banner
-     */
-    async updateBanner(userId: string, uri: string): Promise<string> {
-        try {
-            const path = `users/${userId}/banner.jpg`;
-            const downloadUrl = await MediaService.uploadImage(uri, path);
-
-            await this.updateProfile(userId, { banner: downloadUrl } as any);
-            return downloadUrl;
-        } catch (error) {
-            console.error('Error updating banner:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Delete user account and data
-     */
-    async deleteAccount(userId: string): Promise<void> {
-        try {
-            await db.collection('users').doc(userId).delete();
-
-            const user = auth.currentUser;
-            if (user) {
-                await user.delete();
-            }
-        } catch (error) {
-            console.error('Error deleting account:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Get user profile by ID
-     */
-    async getProfile(userId: string): Promise<UserProfile | null> {
-        try {
-            const doc = await db.collection('users').doc(userId).get();
-            if (doc.exists) {
-                return doc.data() as UserProfile;
-            }
-            return null;
-        } catch (error) {
-            console.error('Error getting profile:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Get user by username
-     */
-    async getUserByUsername(username: string): Promise<UserProfile | null> {
-        try {
-            const snapshot = await db.collection('users')
-                .where('username', '==', username.toLowerCase())
-                .limit(1)
-                .get();
-
-            if (!snapshot.empty) {
-                return snapshot.docs[0].data() as UserProfile;
-            }
-            return null;
-        } catch (error) {
-            console.error('Error getting user by username:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Search users by username or display name
-     */
-    async searchUsers(query: string): Promise<UserProfile[]> {
-        try {
-            const q = query.toLowerCase();
-            const snapshot = await db.collection('users')
-                .where('username', '>=', q)
-                .where('username', '<=', q + '\uf8ff')
-                .limit(20)
-                .get();
-
-            return snapshot.docs.map(doc => doc.data() as UserProfile);
-        } catch (error) {
-            console.error('Error searching users:', error);
-            throw error;
-        }
-    }
-}
-
-export default new UserService();
+};

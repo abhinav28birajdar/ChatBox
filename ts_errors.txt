@@ -1,0 +1,66 @@
+﻿src/components/chat/MediaMessage.tsx(44,43): error TS2339: Property 'RESIZE_MODE_CONTAIN' does not exist on type 'typeof Video'.
+src/components/common/Card.tsx(19,10): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: ViewProps & TouchableOpacityProps & RefAttributes<View>): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<...>> | ... 4 more ... | undefined', gave the following error.
+    Type '{ children: ReactNode; hitSlop?: number | Insets | null | undefined; id?: string | undefined; needsOffscreenAlphaCompositing?: boolean | undefined; onLayout?: ((event: LayoutChangeEvent) => void) | undefined; ... 85 more ...; style: (false | ... 3 more ... | undefined)[]; }' is not assignable to type 'TouchableOpacityProps'.
+      Types of property 'onBlur' are incompatible.
+        Type '((e: BlurEvent) => void) | null | undefined' is not assignable to type '((e: NativeSyntheticEvent<TargetedEvent>) => void) | undefined'.
+          Type 'null' is not assignable to type '((e: NativeSyntheticEvent<TargetedEvent>) => void) | undefined'.
+  Overload 2 of 2, '(props: ViewProps & TouchableOpacityProps & RefAttributes<View>, context: any): string | number | bigint | boolean | ... 5 more ... | undefined', gave the following error.
+    Type '{ children: ReactNode; hitSlop?: number | Insets | null | undefined; id?: string | undefined; needsOffscreenAlphaCompositing?: boolean | undefined; onLayout?: ((event: LayoutChangeEvent) => void) | undefined; ... 85 more ...; style: (false | ... 3 more ... | undefined)[]; }' is not assignable to type 'TouchableOpacityProps'.
+      Types of property 'onBlur' are incompatible.
+        Type '((e: BlurEvent) => void) | null | undefined' is not assignable to type '((e: NativeSyntheticEvent<TargetedEvent>) => void) | undefined'.
+          Type 'null' is not assignable to type '((e: NativeSyntheticEvent<TargetedEvent>) => void) | undefined'.
+src/components/common/EmptyState.tsx(32,21): error TS2322: Type '(() => void) | undefined' is not assignable to type '() => void'.
+  Type 'undefined' is not assignable to type '() => void'.
+src/components/profile/FriendCard.tsx(65,25): error TS2322: Type '(() => void) | undefined' is not assignable to type '() => void'.
+  Type 'undefined' is not assignable to type '() => void'.
+src/hooks/useNotifications.ts(9,34): error TS2554: Expected 1 arguments, but got 0.
+src/hooks/useNotifications.ts(10,30): error TS2554: Expected 1 arguments, but got 0.
+src/hooks/useNotifications.ts(28,27): error TS2339: Property 'removeNotificationSubscription' does not exist on type 'typeof import("E:/programming/React Native/ChatBox/node_modules/expo-notifications/build/index")'.
+src/hooks/useNotifications.ts(29,27): error TS2339: Property 'removeNotificationSubscription' does not exist on type 'typeof import("E:/programming/React Native/ChatBox/node_modules/expo-notifications/build/index")'.
+src/screens/auth/EmailVerifyScreen.tsx(33,31): error TS2339: Property 'sendEmailVerification' does not exist on type '{ signUpWithEmail: (email: string, password: string, displayName: string) => Promise<UserCredential>; signInWithEmail: (email: string, password: string) => Promise<...>; ... 8 more ...; reauthenticate: (password: string) => Promise<...>; }'.
+src/screens/auth/ForgotPasswordScreen.tsx(25,31): error TS2339: Property 'resetPassword' does not exist on type '{ signUpWithEmail: (email: string, password: string, displayName: string) => Promise<UserCredential>; signInWithEmail: (email: string, password: string) => Promise<...>; ... 8 more ...; reauthenticate: (password: string) => Promise<...>; }'.
+src/screens/auth/PermissionsScreen.tsx(9,27): error TS2307: Cannot find module 'expo-location' or its corresponding type declarations.
+src/screens/auth/PermissionsScreen.tsx(39,17): error TS2739: Type '{ pushNotifications: boolean; locationSharing: boolean; darkMode: false; }' is missing the following properties from type 'UserSettings': theme, notifications
+src/screens/auth/ProfileSetupScreen.tsx(45,49): error TS2554: Expected 3 arguments, but got 2.
+src/screens/auth/ProfileSetupScreen.tsx(97,25): error TS2322: Type '{ label: string; placeholder: string; value: string; onChangeText: Dispatch<SetStateAction<string>>; multiline: true; containerStyle: { marginTop: number; }; }' is not assignable to type 'IntrinsicAttributes & InputProps'.
+  Property 'multiline' does not exist on type 'IntrinsicAttributes & InputProps'.
+src/screens/chat/ChatListScreen.tsx(26,44): error TS2339: Property 'subscribeToConversations' does not exist on type '{ subscribeToMessages: (conversationId: string, callback: (msgs: Message[]) => void) => Unsubscribe; sendMessage: (conversationId: string, message: Partial<Message>) => Promise<...>; toggleReaction: (conversationId: string, messageId: string, uid: string, emoji: string) => Promise<...>; markAsRead: (conversationId: ...'.
+src/screens/chat/ChatListScreen.tsx(26,81): error TS7006: Parameter 'convs' implicitly has an 'any' type.
+src/screens/chat/DirectMessageScreen.tsx(34,28): error TS2554: Expected 3 arguments, but got 2.
+src/screens/chat/DirectMessageScreen.tsx(41,53): error TS2339: Property 'subscribePresence' does not exist on type '{ setTyping: (conversationId: string, uid: string, isTyping: boolean) => void; subscribeTyping: (conversationId: string, uid: string, onTyping: (users: string[]) => void) => Unsubscribe; initPresence: (uid: string) => void; }'.
+src/screens/chat/DirectMessageScreen.tsx(41,87): error TS7006: Parameter 'presence' implicitly has an 'any' type.
+src/screens/chat/DirectMessageScreen.tsx(96,29): error TS2322: Type '{ message: any; isMine: boolean; showAvatar: boolean; }' is not assignable to type 'IntrinsicAttributes & MessageBubbleProps'.
+  Property 'showAvatar' does not exist on type 'IntrinsicAttributes & MessageBubbleProps'.
+src/screens/community/ChannelScreen.tsx(28,54): error TS2339: Property 'subscribeToChannelMessages' does not exist on type '{ createCommunity: (community: Omit<Community, "id" | "createdAt" | "memberCount">) => Promise<string>; getCommunity: (communityId: string) => Promise<Community | null>; ... 5 more ...; getMembers: (communityId: string) => Promise<...>; }'.
+src/screens/community/ChannelScreen.tsx(28,103): error TS7006: Parameter 'newMessages' implicitly has an 'any' type.
+src/screens/community/ChannelScreen.tsx(41,36): error TS2339: Property 'sendChannelMessage' does not exist on type '{ createCommunity: (community: Omit<Community, "id" | "createdAt" | "memberCount">) => Promise<string>; getCommunity: (communityId: string) => Promise<Community | null>; ... 5 more ...; getMembers: (communityId: string) => Promise<...>; }'.
+src/screens/community/ChannelScreen.tsx(76,29): error TS2322: Type '{ message: any; isMine: boolean; showAvatar: boolean; }' is not assignable to type 'IntrinsicAttributes & MessageBubbleProps'.
+  Property 'showAvatar' does not exist on type 'IntrinsicAttributes & MessageBubbleProps'.
+src/screens/community/ChannelScreen.tsx(83,18): error TS2741: Property 'onTyping' is missing in type '{ onSendMessage: (text: string, type: any, metadata?: any) => Promise<void>; conversationId: string; }' but required in type 'MessageInputProps'.
+src/screens/community/ServerDetailScreen.tsx(32,53): error TS2551: Property 'getCommunityById' does not exist on type '{ createCommunity: (community: Omit<Community, "id" | "createdAt" | "memberCount">) => Promise<string>; getCommunity: (communityId: string) => Promise<Community | null>; ... 5 more ...; getMembers: (communityId: string) => Promise<...>; }'. Did you mean 'getCommunity'?
+src/screens/community/ServerDetailScreen.tsx(118,42): error TS2339: Property 'userId' does not exist on type 'CommunityMember'.
+src/screens/community/ServerDetailScreen.tsx(119,79): error TS2339: Property 'userId' does not exist on type 'CommunityMember'.
+src/screens/marketplace/AddProductScreen.tsx(63,32): error TS2554: Expected 3 arguments, but got 2.
+src/screens/marketplace/AddProductScreen.tsx(76,17): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'Omit<Product, "id" | "createdAt" | "updatedAt" | "rating" | "reviewCount">'.
+src/screens/marketplace/AddProductScreen.tsx(178,25): error TS2322: Type '{ label: string; placeholder: string; value: string; onChangeText: Dispatch<SetStateAction<string>>; multiline: true; containerStyle: { marginTop: number; }; }' is not assignable to type 'IntrinsicAttributes & InputProps'.
+  Property 'multiline' does not exist on type 'IntrinsicAttributes & InputProps'.
+src/screens/marketplace/CartScreen.tsx(15,48): error TS2339: Property 'total' does not exist on type 'CartState'.
+src/screens/marketplace/CartScreen.tsx(41,22): error TS2741: Property 'image' is missing in type '{ onRemove: (productId: string) => void; onUpdateQuantity: (productId: string, quantity: number) => void; quantity: number; id: string; sellerId: string; title: string; description: string; ... 12 more ...; updatedAt: any; }' but required in type 'CartItemProps'.
+src/screens/marketplace/CheckoutScreen.tsx(17,20): error TS2339: Property 'total' does not exist on type 'CartState'.
+src/screens/marketplace/CheckoutScreen.tsx(39,17): error TS2353: Object literal may only specify known properties, and 'customerId' does not exist in type 'Omit<Order, "id" | "status" | "createdAt" | "updatedAt" | "timeline">'.
+src/screens/marketplace/CheckoutScreen.tsx(45,33): error TS2551: Property 'image' does not exist on type 'CartItem'. Did you mean 'images'?
+src/screens/marketplace/CheckoutScreen.tsx(116,26): error TS2304: Cannot find name 'MaterialCommunityIcons'.
+src/screens/marketplace/MarketplaceScreen.tsx(133,44): error TS2552: Cannot find name 'Alert'. Did you mean 'alert'?
+src/screens/marketplace/ProductDetailScreen.tsx(31,51): error TS2551: Property 'getProductById' does not exist on type '{ createProduct: (product: Omit<Product, "id" | "createdAt" | "updatedAt" | "rating" | "reviewCount">) => Promise<string>; getProduct: (productId: string) => Promise<...>; ... 4 more ...; getFeaturedProducts: () => Promise<...>; }'. Did you mean 'getProduct'?
+src/screens/marketplace/ProductDetailScreen.tsx(45,9): error TS2554: Expected 2 arguments, but got 1.
+src/screens/notifications/NotificationScreen.tsx(26,17): error TS2741: Property 'isRead' is missing in type '{ id: string; type: "message"; title: string; body: string; data: { conversationId: string; }; createdAt: string; read: false; }' but required in type 'NotificationItem'.
+src/screens/notifications/NotificationScreen.tsx(35,17): error TS2741: Property 'isRead' is missing in type '{ id: string; type: "friend_request"; title: string; body: string; data: { userId: string; }; createdAt: string; read: true; }' but required in type 'NotificationItem'.
+src/screens/notifications/NotificationScreen.tsx(44,17): error TS2741: Property 'isRead' is missing in type '{ id: string; type: "order_status"; title: string; body: string; data: { orderId: string; }; createdAt: string; read: false; }' but required in type 'NotificationItem'.
+src/screens/profile/FriendsScreen.tsx(62,57): error TS2551: Property 'getOrCreateConversation' does not exist on type '{ subscribeToMessages: (conversationId: string, callback: (msgs: Message[]) => void) => Unsubscribe; sendMessage: (conversationId: string, message: Partial<Message>) => Promise<...>; toggleReaction: (conversationId: string, messageId: string, uid: string, emoji: string) => Promise<...>; markAsRead: (conversationId: ...'. Did you mean 'getConversations'?
+src/screens/profile/FriendsScreen.tsx(142,25): error TS2322: Type '{ user: FirestoreUser; isFriend: boolean | undefined; isPending: boolean; isRequestSent: boolean; onAction: () => Promise<void>; onMessage: () => Promise<void>; }' is not assignable to type 'IntrinsicAttributes & FriendCardProps'.
+  Property 'user' does not exist on type 'IntrinsicAttributes & FriendCardProps'.
+src/screens/profile/SettingsScreen.tsx(143,90): error TS2322: Type '{ pushNotifications: boolean; theme?: "light" | "dark" | "system" | undefined; notifications?: boolean | undefined; locationSharing?: boolean; darkMode?: boolean; }' is not assignable to type 'UserSettings'.
+  Types of property 'theme' are incompatible.
+    Type '"light" | "dark" | "system" | undefined' is not assignable to type '"light" | "dark" | "system"'.
+      Type 'undefined' is not assignable to type '"light" | "dark" | "system"'.
