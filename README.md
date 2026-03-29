@@ -13,7 +13,7 @@ A sleek, real-time social chatting and community engine.
 ---
 ## 🎥 Live Application Demo
 
-https://github.com/user-attachments/assets/afcfd69b-59fb-419f-ba21-5406b2daa505
+https://github.com/user-attachments/assets/3ac23a2c-4b3c-48e6-a43a-c47ec4d1b9a3
 
 ---
 ## 🚀 Concept
