@@ -10,7 +10,12 @@ A sleek, real-time social chatting and community engine.
 [![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)](#)
 
 </div>
+---
+## 🎥 Live Application Demo
 
+https://github.com/user-attachments/assets/afcfd69b-59fb-419f-ba21-5406b2daa505
+
+---
 ## 🚀 Concept
 
 **ChatBox** is a high-performance, real-time chatting and community application optimized natively via Expo. It features extremely fast real-time synchronization backed by Firebase, allowing users to discover communities, swap dynamic QR codes, and chat on the fly with animated UI components seamlessly integrating within iOS and Android simultaneously.
